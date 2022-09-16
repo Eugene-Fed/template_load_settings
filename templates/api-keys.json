@@ -1,0 +1,16 @@
+{
+    "api_ozon":
+      {
+      "client_id": "number",
+      "api_key": "key",
+      "url_domain": "domain",
+      "url_command": "url"
+      },
+    "api_wb":
+      {
+      "client_id": "number",
+      "api_key": "key",
+      "url_domain": "domain",
+      "url_command": "url"
+      }
+}

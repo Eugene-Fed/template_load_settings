@@ -6,6 +6,9 @@ __pycache__/
 # API keys
 api-keys/
 
+# jupyter notebook
+/.ipynb_checkpoints/
+
 # C extensions
 *.so
 
