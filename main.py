@@ -12,28 +12,45 @@ SETTINGS_FILE = 'settings.json'
 
 templates_dir = Path(TEMPLATES_DIR)
 settings_file = Path(SETTINGS_FILE)
-settings = {}
-api_keys = {}
+# settings = {}
+# api_keys = {}
 
 
-def load_settings(templates_dir=templates_dir, settings_file=settings_file, settings=settings):
-    if settings_file.exists():
-        with settings_file.open() as f:
-            settings = json.load(f)
+def load_json(templates_dir=templates_dir, file=settings_file):
+    """Проверяем наличие файла. Если файл не существует - загружаем его из папки шаблонов.
+    Если шаблон отсутствует - выходим с ошибкой"""
+    json_data = {}
+    if file.exists():
+        with file.open() as f:
+            json_data = json.load(f)
+            print(f'File "{str(file)}" exists.')
     else:
-        settings_template = templates_dir / settings_file
-        if settings_template.exists():
-            with settings_template.open() as f:
-                settings = json.load(f)
-                # TODO: добавить интерактивный вввод параметров с дальнейшим сохранением в файл settings.json
-            with settings_file.open("w", encoding="utf-8") as f:
-                json.dump(settings, f, indent=4, ensure_ascii=False)
+        file_template = templates_dir / file.name
+        if file_template.exists():
+            with file_template.open() as f:
+                json_data = json.load(f)
+                # TODO: добавить интерактивный ввод параметров с дальнейшим сохранением в файл settings.json
 
+            # Обходим список родителей в обратном порядке. т.к. чем больше индекс, тем ближе родитель к корневому
+            # [0: 'dir_1/dir_2/dir_3'], [1: 'dir_1/dir_2'], [2: 'dir_1']
+            for parent in file.parents[::-1]:
+                # если папка не существует, то создаем папку
+                if not parent.is_dir():
+                    parent.mkdir()
+
+            # После того как все папки созданы, добавляем в нее искомый файл из шаблона.
+            with file.open("w", encoding="utf-8") as f:
+                json.dump(json_data, f, indent=4, ensure_ascii=False)
+            print(f'File "{str(file)}" does not exists. It will be  created from template.')
         else:
-            print('Files "settings.json" and "templates/settings.json" do not exists')
+            print(f'Files "{str(file)}" and "{str(templates_dir / file.name)}" do not exists')
             sys.exit(1)
+    return json_data
 
 
 if __name__ == '__main__':
-    load_settings(settings=settings)
+    settings = load_json(file=settings_file)
+    api_keys_path = Path(settings['api-keys_dir']) / Path(settings['api-keys_file'])
+    api_keys = load_json(file=api_keys_path)
     print(settings)
+
