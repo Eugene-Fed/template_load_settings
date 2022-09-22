@@ -12,8 +12,6 @@ SETTINGS_FILE = 'settings.json'
 
 templates_dir = Path(TEMPLATES_DIR)
 settings_file = Path(SETTINGS_FILE)
-# settings = {}
-# api_keys = {}
 
 
 def load_json(templates_dir=templates_dir, file=settings_file):
